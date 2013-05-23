@@ -6,7 +6,7 @@ namespace PhpHalMapperTest\Entity;
  * Class Customer
  * @package PhpHalMapperTest\Entity
  */
-class Customer
+class Customer extends AbstractEntity
 {
     /**
      * @var string
