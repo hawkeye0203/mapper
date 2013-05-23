@@ -45,12 +45,10 @@ class PhpObjectMapper
     {
         $object = new $this->mappedClass();
 
-        $properties = $this->getObjectProperties($object);
-
         foreach ($json as $key => $value) {
-            if (isset($properties[$key])) {
+            if (method_exists($object, 'set' . $key)) {
                 if (isset($this->factories[$key]) && is_callable($this->factories[$key])) {
-                    $mappedValue = $this->factories[$key]($value);
+                    $mappedValue = $this->factories[$key]($value, $json);
                     $object->{'set' . $key}($mappedValue);
                 } else {
                     $object->{'set' . $key}($value);
@@ -59,23 +57,5 @@ class PhpObjectMapper
         }
 
         return $object;
-    }
-
-    /**
-     * @param object $object
-     * @return array
-     */
-    protected function getObjectProperties($object)
-    {
-        $reflector = new \ReflectionClass($object);
-        $list = $reflector->getProperties();
-
-        $properties = array();
-
-        foreach ($list as $property) {
-            $properties[$property->getName()] = $property->getName();
-        }
-
-        return $properties;
     }
 }
